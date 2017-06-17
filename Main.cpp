@@ -31,6 +31,7 @@ int main(){
     if(file1.is_open()){
         vehiculos=cargarVehiculos(vehiculos);
     } 
+    
     vector<Vehiculo*> vacio;
     vector<Vehiculo*> tempVeh;
     vector<string> facturas;
@@ -82,10 +83,10 @@ int main(){
                             vehiculoRaiz=vehiculos[pos];
                             if(vehiculoRaiz->getEstado()==false){
                                 vehiculoRaiz->setEstado(true);
-                                string getprecio = vehiculoRaiz->getPrecio() + "";
+                                
                                 cout<<"Carro alquilado!"<<endl;
                                 acum<<"- Marca: "<<vehiculoRaiz->getMarca()<<" "<<"Placa: "<<vehiculoRaiz->getPlaca()<<" \n"
-                                    <<"Precio: "<<getprecio<<"\n";
+                                    <<"\n";
                             }else{
                                 cout<<"El carro que escogio ya esta alquilado!"<<endl;
                             }
@@ -143,7 +144,9 @@ int main(){
                                 cin>>year;
                                 cout<<"Ingrese precio: "<<endl;
                                 cin>>precio;
+
                                 Vehiculo* vehiculoTemp = new Vehiculo(placa,modelo,marca,year,precio,false);
+                                vehiculoTemp->setPrecio(precio);
                                 vehiculos.push_back(vehiculoTemp);
                                 guardarTxtVehiculo(vehiculoTemp);
                                 cout<<"Se agrego el vehiculo exitosamente!"<<endl;
@@ -224,14 +227,14 @@ int main(){
         }
         if(opcion==4){
             int acum=0;
-            for (int i = 0; i <= usuarios.size(); i++)
+            for (int i = 0; i < usuarios.size(); i++)
             {
-                    if(i==0){
+                   /* if(i==0){
                     cout<<adminRaiz.getNombre()<<", CONTRASENA SECRETA"<<" "<<adminRaiz.getSeguro()<<" "
                         <<adminRaiz.getCargo()<<endl;
-                    }
-                    acum++;
-                    cout<<acum<<".) "<<usuarios[i]->getNombre()<<" "<<usuarios[i]->getContrasena()<<" "
+                    }*/
+                    //acum++;
+                    cout<<i<<".) "<<usuarios[i]->getNombre()<<" "<<usuarios[i]->getContrasena()<<" "
                         <<reinterpret_cast<Cliente*>(usuarios[i])->getMembresia()<<endl;
                 
             }
@@ -271,7 +274,8 @@ return ss.str();
 void listarCarros(vector<Vehiculo*> vehiculos){
     for (int i = 0; i < vehiculos.size(); ++i)
     {
-        cout<<i<<".) Placa: "<<vehiculos[i]->getPlaca()<<", Modelo: "<<vehiculos[i]->getModelo()<<", Year"<<
+        cout<<i<<".) Placa: "<<vehiculos[i]->getPlaca()<<", Modelo: "<<vehiculos[i]->getModelo()<<", Marca: "<<
+                vehiculos[i]->getMarca()<<", Year: "<<
                 vehiculos[i]->getYear()<<", Precio: "<<vehiculos[i]->getPrecio()<<", Alquilado: ";
                 if(vehiculos[i]->getEstado()==true){
                     cout<<"Si"<<endl;
@@ -296,13 +300,19 @@ void guardarTxtUsuario(Usuario* usuario){
 
 void guardarTxtVehiculo(Vehiculo* vehiculo){
     ofstream archivo;
+    string estado;
     string ruta="Nombre.txt";
     stringstream ss;
     ss<<"Vehiculos.txt";
     ruta=ss.str();
     archivo.open(ruta.c_str(),ios::app);
+    if(vehiculo->getEstado()==true){
+        estado="Si";
+    }else{
+        estado="No";
+    }
     archivo<<vehiculo->getPlaca()<<" "<<vehiculo->getModelo()<<" "<<vehiculo->getMarca()   
-            <<" "<<vehiculo->getYear()<<" "<<vehiculo->getPrecio()<<" "<<vehiculo->getEstado()<<endl;
+            <<" "<<vehiculo->getYear()<<" "<<vehiculo->getPrecio()<<" "<<estado<<endl;
     
     archivo.close();
 }
@@ -329,9 +339,9 @@ void guardarTxtFactura(string factura){
                 string nombre = "";
                 string membresia = "";
 
-                archivo >> nombre;
                 archivo >> contrasena;
                 archivo >> membresia;
+                archivo >> nombre;
 
                 Usuario* usuario = new Cliente(nombre,contrasena,membresia);
                 usuarios.push_back(usuario);
